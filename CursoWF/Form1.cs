@@ -16,5 +16,10 @@ namespace CursoWF
         {
             InitializeComponent();
         }
+
+        private void btnBotao1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(txtboxNome.Text);
+        }
     }
 }
