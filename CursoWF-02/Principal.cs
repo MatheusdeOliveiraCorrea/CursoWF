@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,7 +22,7 @@ namespace CursoWF_02
 
         private void AoClicarLogin(object sender, EventArgs e)
         {
-            if (txtNome.Text.Equals("admin") && txtSenha.Text.Equals("admin"))
+            if (txtNome.Text.Equals("admin") && txtSenha.Text.Equals("12345"))
             {
                 BemVindoTela bemVindoTela = new BemVindoTela();
                 NomeUsuario = txtNome.Text;
@@ -35,9 +36,12 @@ namespace CursoWF_02
 
         private void AoDigitarSenha(object sender, KeyPressEventArgs e)
         {
-            int asc = (int)e.KeyChar; 
+            int asc = (int)e.KeyChar;
 
-            if(!Char.IsDigit(e.KeyChar) && asc != 08 && asc != 127)
+            var backspaceAscii = 08;
+            var delAscii = 127;
+
+            if(!Char.IsDigit(e.KeyChar) && asc != backspaceAscii && asc != delAscii)
             {
                 e.Handled = true;
 
@@ -47,6 +51,42 @@ namespace CursoWF_02
                     txtSenha.Text = String.Empty;
 
                 txtSenha.Focus();
+            }
+        }
+
+        private void txtNome_Validating(object sender, CancelEventArgs e)
+        {
+            if (txtNome.Text == String.Empty)
+                provedorErros.SetError(this.txtNome, "Informe o nome do usuário");
+            else
+                provedorErros.Clear();
+        }
+
+        private void AoClicarEnter(object sender, KeyPressEventArgs e)
+        {
+            var enterKey = 13; 
+
+            if (e.KeyChar == Convert.ToChar((char)enterKey))
+            {
+                e.Handled = true;
+                SendKeys.Send("{TAB}");
+            }
+        }
+
+        private void txtSenha_Validating(object sender, CancelEventArgs e)
+        {
+            if (txtSenha.Text == String.Empty)
+                provedorErros.SetError(this.txtSenha, "Informe a senha do usuário");
+            else
+                provedorErros.Clear();
+        }
+
+        private void ValidarEmail(object sender, CancelEventArgs e)
+        {
+            var regex = new Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$");
+            if (!regex.IsMatch(this.txtEmail.Text))
+            {
+                provedorErros.SetError(txtEmail, "email inválido");
             }
         }
     }
